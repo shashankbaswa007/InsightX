@@ -1,0 +1,24 @@
+# InsightX AI - Python ML Backend
+# FastAPI & Server
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+python-multipart==0.0.20
+
+# Machine Learning
+scikit-learn==1.6.1
+pandas==2.2.3
+numpy==1.26.4
+
+# Explainable AI (XAI)
+shap==0.46.0
+lime==0.2.0.1
+
+# Fairness & Bias Detection
+fairlearn==0.11.0
+
+# Data Handling & Utilities
+joblib==1.4.2
+openpyxl==3.1.5
+
+# CORS
+starlette==0.46.2
