@@ -8,34 +8,39 @@ InsightX AI is a comprehensive, production-grade Explainable AI (XAI) and MLOps 
 ## 🌟 Core Features
 
 ### 🤖 1. Advanced ML & AutoML Engine
-*   **Multi-Algorithm Support:** Train and compare state-of-the-art models including **XGBoost**, **LightGBM**, **Multi-Layer Perceptron (MLP) Neural Networks**, **Random Forest**, **Gradient Boosting**, and **Linear/Logistic Regression**.
-*   **AutoML Execution:** Automatically explores hyperparameter spaces, evaluates performance metrics across cross-validation folds, and selects the optimal algorithm for your dataset.
+*   **Multi-Algorithm Support:** Train and compare state-of-the-art models including **XGBoost**, **LightGBM**, **Multi-Layer Perceptron (MLP) Neural Networks**, **Random Forest**, **Gradient Boosting**, **Linear/Logistic Regression**, and **Stacking Ensembles**.
+*   **AutoML Execution:** Automatically explores hyperparameter spaces, evaluates performance metrics across 5-Fold Cross Validation (`K-Fold`/`StratifiedKFold`), and builds a Meta "Super Model" (`StackingClassifier`) by pooling predictions from top-tier algorithms.
 *   **Task Versatility:** Supports both **Classification** (binary/multiclass) and **Regression** problems.
 
-### 🛡️ 2. Smart Regularization & Anti-Overfitting Pipeline
-*   **Automated Overfitting Detection:** Actively monitors the performance delta between training and validation/test subsets. If a gap exceeds **5%**, the platform triggers an automatic overfitting defense protocol.
-*   **Dynamic Fallback Strategy:** Automatically switches to high-regularization parameter suites (e.g., increased `L1`/`L2` penalty, reduced max depth, tree pruning, dropout, and early stopping configurations) and re-evaluates until a generalizable model is secured.
+### 🧬 2. Enterprise Data Preprocessing (Zero Leakage Pipeline)
+*   **Imbalanced Data Defense (SMOTE):** Automatically detects severe class imbalances and applies Synthetic Minority Over-sampling Technique (`imbalanced-learn`) to protect the model from majority-class bias.
+*   **Target Encoding:** Replaces naive One-Hot Encoding with Target Encoding for high-cardinality categorical features, preventing feature-space bloat and preserving tree-model efficiency.
+*   **MICE Imputation & Robust Scaling:** Intelligently predicts missing values using `IterativeImputer` (Multiple Imputation by Chained Equations) and normalizes distributions ignoring extreme outliers using `RobustScaler`. All transformations are strictly applied *post-split* to guarantee zero data leakage.
 
-### 🔍 3. Explainable AI (XAI) Hub
+### 🛡️ 3. Smart Regularization & Anti-Overfitting Pipeline
+*   **Automated Overfitting Detection:** Actively monitors the performance delta between training and test sets. If a gap exceeds **5%**, the platform triggers an automatic overfitting defense protocol.
+*   **Dynamic Fallback Strategy:** Automatically switches to high-regularization parameter suites (e.g., increased `L1`/`L2` penalty, reduced max depth) and re-evaluates until a generalizable model is secured.
+
+### 🔍 4. Explainable AI (XAI) Hub
 *   **SHAP (SHapley Additive exPlanations):** Global feature importance charts and local force-like explanation outputs that quantify each feature's contribution to individual predictions.
 *   **LIME (Local Interpretable Model-agnostic Explanations):** Explains black-box predictions locally by perturbing the input data and fitting an interpretable surrogate model.
 *   **Interactive Visualizations:** Sleek charts mapping out exact numeric importances and model decision boundaries.
 
-### 📊 4. Interactive Exploratory Data Analysis (EDA)
+### 📊 5. Interactive Exploratory Data Analysis (EDA)
 *   **Correlation Matrix Heatmaps:** Instantly understand linear relationships between attributes.
 *   **Value Distributions:** Examine density and count distributions for both target variables and individual features.
 *   **Data Health Audits:** Automatic missing-value assessments, target skewness indicators, and data type summaries.
 
-### 🔮 5. Interactive "What-If" Analysis
+### 🔮 6. Interactive "What-If" Analysis
 *   **Sensitivity Testing:** Adjust individual feature values using real-time sliders and input fields to immediately witness how the trained model's prediction changes.
 *   **Counterfactual Explorer:** Run simulations to find the minimum feature modification required to flip a classification prediction (e.g., from *Denied* to *Approved*).
 
-### ⚖️ 6. Fairness & Bias Assessment
+### ⚖️ 7. Fairness & Bias Assessment
 *   **Demographic Audits:** Analyze model predictions against protected attributes (e.g., age, gender, ethnicity) using fairness metrics like **Demographic Parity** and **Equalized Odds**.
 *   **Disparate Impact & Selection Rate:** Quantify systemic bias to ensure ethical AI deployments.
 
-### 📥 7. Model Exporting & Reporting
-*   **Serialized Artifacts:** Download the fully trained ML model as a standardized Python `.pkl` (pickle) file for downstream deployment.
+### 📥 8. Model Exporting & Reporting
+*   **Serialized Artifacts:** Download the fully trained ML model as a standardized Python `.joblib` file alongside its data preprocessors for immediate downstream deployment.
 *   **Executive PDF/HTML Reports:** Export clean, well-formatted summaries of model performance, EDA visualizations, fairness metrics, and feature importances.
 
 ---

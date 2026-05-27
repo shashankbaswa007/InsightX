@@ -23,8 +23,8 @@ class TrainingConfig(BaseModel):
     dataset_id: str
     target_column: str
     drop_columns: List[str] = Field(default_factory=list)
-    model_type: Literal["random_forest", "gradient_boosting", "logistic_regression", "xgboost", "lightgbm", "mlp"] = Field(
-        ..., description="random_forest, gradient_boosting, logistic_regression, xgboost, lightgbm, or mlp"
+    model_type: Literal["random_forest", "gradient_boosting", "logistic_regression", "xgboost", "lightgbm", "mlp", "stacking"] = Field(
+        ..., description="random_forest, gradient_boosting, logistic_regression, xgboost, lightgbm, mlp, or stacking"
     )
     test_size: float = Field(0.2, ge=0.05, le=0.5)
     hyperparams: Optional[Dict[str, Any]] = Field(default=None, description="Optional hyperparameters for the model")
@@ -33,6 +33,7 @@ class TrainingConfig(BaseModel):
 class ModelMetrics(BaseModel):
     accuracy: Optional[float] = None
     train_accuracy: Optional[float] = None
+    cv_score: Optional[float] = None
     f1_score: Optional[float] = None
     precision: Optional[float] = None
     recall: Optional[float] = None

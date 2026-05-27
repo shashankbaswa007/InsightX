@@ -10,7 +10,7 @@ from typing import List, Dict, Any
 
 from app.config import MODEL_DIR
 from app.models.schemas import FeatureImportance, ShapValues, LimeExplanation, PredictionExplanation
-from app.services.ml_service import load_dataset, preprocess_data
+from app.services.ml_service import load_dataset, preprocess_data, apply_transformers
 
 
 def _normalize_shap_values(shap_values_raw, is_classification: bool, prediction: int, n_features: int) -> np.ndarray:
@@ -119,6 +119,10 @@ def get_local_explanation(model_id: str, dataset_id: str, row_index: int) -> Pre
     drop_columns = artifact.get('drop_columns', [])
     df = load_dataset(dataset_id)
     X, y, _ = preprocess_data(df, target_column, drop_columns)
+    
+    # APPLY TRANSFORMATIONS SO X MATCHES WHAT THE MODEL WAS TRAINED ON
+    transformers = artifact.get('transformers', {})
+    X = apply_transformers(X, transformers)
     
     if row_index < 0 or row_index >= len(X):
         raise ValueError("row_index out of bounds")

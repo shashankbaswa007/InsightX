@@ -49,7 +49,7 @@ async def train_automl(config: AutoMLConfig):
     Returns a list of TrainedModel sorted by primary metric (accuracy or R²).
     """
     try:
-        models_to_test = ["random_forest", "logistic_regression", "xgboost", "lightgbm", "mlp"]
+        models_to_test = ["random_forest", "logistic_regression", "xgboost", "lightgbm", "mlp", "stacking"]
         results: List[TrainedModel] = []
         
         # We need to know if it's classification to sort correctly

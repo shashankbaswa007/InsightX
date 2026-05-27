@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 from app.config import MODEL_DIR
-from app.services.ml_service import load_dataset, preprocess_data
+from app.services.ml_service import load_dataset, preprocess_data, apply_transformers
 
 router = APIRouter(prefix="/api/whatif", tags=["What-If Analysis"])
 
@@ -37,16 +37,14 @@ async def whatif_predict(model_id: str, request: WhatIfRequest):
         row_X = row_X.drop(columns=[c for c in cols_to_drop if c in row_X.columns], errors="ignore")
         
         # Handle missing values if user cleared an input
-        row_X = row_X.fillna(0)
+        row_X = row_X.replace(["", None], np.nan)
         
-        # One-hot encode categorical features (if any)
-        cat_cols = row_X.select_dtypes(exclude=[np.number]).columns
-        if len(cat_cols) > 0:
-            row_X = pd.get_dummies(row_X, columns=cat_cols)
-            
-        # Ensure the features perfectly match the model's expected features
-        # (pd.get_dummies might drop/create columns if a user inputs a novel categorical value)
-        row_X = row_X.reindex(columns=artifact["feature_names"], fill_value=0)
+        # Apply the exact transformations used during training
+        transformers = artifact.get("transformers", {})
+        row_X = apply_transformers(row_X, transformers)
+        
+        # Ensure correct column order
+        row_X = row_X[artifact["feature_names"]]
         
         prediction = model.predict(row_X)[0].item()
         

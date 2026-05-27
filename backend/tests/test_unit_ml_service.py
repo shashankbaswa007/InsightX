@@ -55,17 +55,15 @@ class TestPreprocessData:
         assert y.dtype in [np.int64, np.int32, np.intp]
         assert set(y.unique()).issubset({0, 1, 2})
 
-    def test_categorical_features_one_hot(self):
-        """Categorical features get one-hot encoded (drop_first=True)."""
+    def test_categorical_features_kept_raw(self):
+        """Categorical features are kept raw for TargetEncoder later."""
         df = pd.DataFrame({
             "num": [1.0, 2.0, 3.0, 4.0],
             "cat": ["A", "B", "A", "C"],
             "target": [0, 1, 0, 1],
         })
         X, y, _ = preprocess_data(df, "target", [])
-        # "cat" should become "cat_B" and "cat_C" (A dropped as first)
-        assert "cat" not in X.columns
-        assert "cat_B" in X.columns or "cat_C" in X.columns
+        assert "cat" in X.columns
         assert "num" in X.columns
 
     def test_drop_columns(self):
@@ -118,23 +116,23 @@ class TestPreprocessData:
         with pytest.raises(ValueError, match="No features remaining"):
             preprocess_data(df, "target", ["a"])
 
-    def test_numeric_nan_imputed(self):
-        """Missing numeric feature values get median-imputed."""
+    def test_numeric_nan_kept(self):
+        """Missing numeric feature values are kept (handled during train_model)."""
         df = pd.DataFrame({
             "x": [1.0, np.nan, 3.0, np.nan, 5.0],
             "target": [0, 1, 0, 1, 0],
         })
         X, y, _ = preprocess_data(df, "target", [])
-        assert not X.isnull().any().any(), "NaN values should be imputed"
+        assert X.isnull().any().any(), "NaN values should be kept for downstream imputer"
 
-    def test_categorical_nan_imputed(self):
-        """Missing categorical feature values get most-frequent imputed."""
+    def test_categorical_nan_kept(self):
+        """Missing categorical feature values are kept (handled during train_model)."""
         df = pd.DataFrame({
             "cat": ["A", "B", np.nan, "A", np.nan],
             "target": [0, 1, 0, 1, 0],
         })
         X, y, _ = preprocess_data(df, "target", [])
-        assert not X.isnull().any().any()
+        assert X.isnull().any().any(), "NaN values should be kept for downstream imputer"
 
 
 # ═══════════════════════════════════════════════════════════════════
