@@ -17,7 +17,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <motion.div
         animate={{ marginLeft: collapsed ? 72 : 280 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="flex flex-1 flex-col min-w-0"
+        className="flex flex-1 flex-col min-w-0 max-md:!ml-0"
       >
         <TopBar pageTitle="Dashboard" />
 

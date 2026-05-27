@@ -42,7 +42,7 @@ export const FeatureImportanceChart: React.FC<FeatureImportanceChartProps> = ({ 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full h-full min-h-[350px] relative rounded-xl border border-border/50 bg-card/40 backdrop-blur-md p-4 shadow-sm"
+      className="w-full h-full min-h-[450px] relative rounded-xl border border-border/50 bg-card/40 backdrop-blur-md p-4 shadow-sm"
     >
       <div className="mb-4">
         <h3 className="text-lg font-semibold tracking-tight text-foreground">
@@ -53,7 +53,7 @@ export const FeatureImportanceChart: React.FC<FeatureImportanceChartProps> = ({ 
         </p>
       </div>
 
-      <div className="w-full h-[300px]">
+      <div className="w-full h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"

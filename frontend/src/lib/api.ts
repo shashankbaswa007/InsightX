@@ -41,7 +41,11 @@ export const uploadDataset = async (file: File): Promise<DatasetMeta> => {
   const formData = new FormData();
   formData.append("file", file);
   
-  const response = await api.post<DatasetMeta>("/api/data/upload", formData);
+  const response = await api.post<DatasetMeta>("/api/data/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
@@ -67,4 +71,62 @@ export const getLocalExplanation = async (
 ): Promise<PredictionExplanation> => {
   const response = await api.get<PredictionExplanation>(`/api/explain/local/${modelId}/${datasetId}/${rowIndex}`);
   return response.data;
+};
+
+export const getCorrelationHeatmap = async (datasetId: string) => {
+  const response = await api.get(`/api/analytics/correlation/${datasetId}`);
+  return response.data;
+};
+
+export const getConfidenceDistribution = async (modelId: string, datasetId: string) => {
+  const response = await api.get(`/api/analytics/confidence/${modelId}/${datasetId}`);
+  return response.data;
+};
+
+export const predictWhatIf = async (modelId: string, datasetId: string, rowIndex: number, modifiedFeatures: Record<string, any>) => {
+  const response = await api.post(`/api/whatif/predict/${modelId}`, {
+    dataset_id: datasetId,
+    row_index: rowIndex,
+    modified_features: modifiedFeatures,
+  });
+  return response.data;
+};
+
+export const analyzeBias = async (modelId: string, datasetId: string, protectedAttribute: string) => {
+  const response = await api.post(`/api/bias/analyze/${modelId}`, {
+    dataset_id: datasetId,
+    protected_attribute: protectedAttribute,
+  });
+  return response.data;
+};
+
+// ─── EDA ─────────────────────────────────────────────────────────────
+
+export const getEDA = async (datasetId: string) => {
+  const response = await api.get(`/api/data/${datasetId}/eda`);
+  return response.data;
+};
+
+// ─── AutoML ──────────────────────────────────────────────────────────
+
+export const trainAutoML = async (config: {
+  dataset_id: string;
+  target_column: string;
+  drop_columns: string[];
+  test_size: number;
+}): Promise<TrainedModel[]> => {
+  const response = await api.post<TrainedModel[]>("/api/train/automl", config);
+  return response.data;
+};
+
+// ─── Export ──────────────────────────────────────────────────────────
+
+export const getExportSnippet = async (modelId: string) => {
+  const response = await api.get(`/api/export/snippet/${modelId}`);
+  return response.data;
+};
+
+export const getDownloadUrl = (modelId: string): string => {
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  return `${baseURL}/api/export/download/${modelId}`;
 };

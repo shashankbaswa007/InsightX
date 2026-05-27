@@ -26,16 +26,18 @@ export interface TrainingConfig {
   dataset_id: string;
   target_column: string;
   drop_columns: string[];
-  model_type: "random_forest" | "gradient_boosting" | "logistic_regression";
+  model_type: "random_forest" | "gradient_boosting" | "logistic_regression" | "xgboost" | "lightgbm" | "mlp";
   test_size: number;
 }
 
 export interface ModelMetrics {
   accuracy?: number;
+  train_accuracy?: number;
   f1_score?: number;
   precision?: number;
   recall?: number;
   rmse?: number;
+  train_rmse?: number;
   mae?: number;
   r2?: number;
   confusion_matrix?: number[][];

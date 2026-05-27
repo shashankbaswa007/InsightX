@@ -16,6 +16,7 @@ import {
   FileUp,
 } from "lucide-react";
 import AppShell from "@/components/layout/app-shell";
+import { useRouter } from "next/navigation";
 
 // ─── Animation Variants ──────────────────────────────────────────
 
@@ -139,27 +140,29 @@ const quickActions = [
     description: "Start your ML pipeline with a dataset",
     icon: Upload,
     gradient: "from-indigo-500 to-violet-600",
-    href: "#upload",
+    href: "/upload",
   },
   {
     title: "View Metrics",
     description: "Accuracy, F1, RMSE and more",
     icon: BarChart3,
     gradient: "from-teal-500 to-emerald-600",
-    href: "#metrics",
+    href: "/training",
   },
   {
     title: "Feature Importance",
     description: "SHAP summary plots & global explanations",
     icon: TrendingUp,
     gradient: "from-violet-500 to-purple-600",
-    href: "#explain",
+    href: "/explanations",
   },
 ];
 
 // ─── Page Component ──────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const router = useRouter();
+
   return (
     <AppShell>
       <motion.div
@@ -203,6 +206,7 @@ export default function DashboardPage() {
                 decisions. Powered by SHAP, LIME, and Fairlearn.
               </p>
               <motion.button
+                onClick={() => router.push("/upload")}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="mt-2 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-shadow hover:shadow-indigo-500/40"
@@ -284,6 +288,7 @@ export default function DashboardPage() {
               return (
                 <motion.button
                   key={action.title}
+                  onClick={() => router.push(action.href)}
                   whileHover={{ y: -3, transition: { duration: 0.2 } }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 text-left transition-all hover:border-[var(--border-hover)]"

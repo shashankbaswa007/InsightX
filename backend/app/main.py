@@ -6,7 +6,7 @@ Main entry point for the ML engine server.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import data, train, explain
+from app.routes import data, train, explain, analytics, whatif, bias, eda, automl, export
 
 app = FastAPI(
     title="InsightX AI - ML Engine",
@@ -24,8 +24,14 @@ app.add_middleware(
 )
 
 app.include_router(data.router)
+app.include_router(eda.router)
 app.include_router(train.router)
+app.include_router(automl.router)
 app.include_router(explain.router)
+app.include_router(analytics.router)
+app.include_router(whatif.router)
+app.include_router(bias.router)
+app.include_router(export.router)
 
 @app.get("/health")
 async def health_check():

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Literal
 
 # ─── Dataset Models ───────────────────────────────────────────────
 
@@ -23,17 +23,24 @@ class TrainingConfig(BaseModel):
     dataset_id: str
     target_column: str
     drop_columns: List[str] = Field(default_factory=list)
-    model_type: str = Field(..., description="random_forest, gradient_boosting, or logistic_regression")
+    model_type: Literal["random_forest", "gradient_boosting", "logistic_regression", "xgboost", "lightgbm", "mlp"] = Field(
+        ..., description="random_forest, gradient_boosting, logistic_regression, xgboost, lightgbm, or mlp"
+    )
     test_size: float = Field(0.2, ge=0.05, le=0.5)
+    hyperparams: Optional[Dict[str, Any]] = Field(default=None, description="Optional hyperparameters for the model")
+    smart_regularization: bool = Field(True, description="Automatically detect overfitting and apply strong regularization")
 
 class ModelMetrics(BaseModel):
     accuracy: Optional[float] = None
+    train_accuracy: Optional[float] = None
     f1_score: Optional[float] = None
     precision: Optional[float] = None
     recall: Optional[float] = None
     rmse: Optional[float] = None
+    train_rmse: Optional[float] = None
     mae: Optional[float] = None
     r2: Optional[float] = None
+    train_r2: Optional[float] = None
     confusion_matrix: Optional[List[List[int]]] = None
     classification_report: Optional[Dict[str, Any]] = None
 

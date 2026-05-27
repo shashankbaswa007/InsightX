@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Search, Bell, ChevronDown } from "lucide-react";
+import { Search, Bell, ChevronDown, Menu } from "lucide-react";
+import { useSidebar } from "@/components/layout/sidebar";
 
 // ─── Top Bar Component ──────────────────────────────────────────────
 
@@ -10,6 +11,8 @@ interface TopBarProps {
 }
 
 export default function TopBar({ pageTitle }: TopBarProps) {
+  const { toggleMobile } = useSidebar();
+
   return (
     <header
       className={cn(
@@ -19,15 +22,23 @@ export default function TopBar({ pageTitle }: TopBarProps) {
       )}
     >
       {/* ── Left: Page Title & Breadcrumb ─────────────────────── */}
-      <div className="flex flex-col justify-center">
-        <div className="flex items-center gap-2 text-xs text-foreground-subtle">
-          <span className="opacity-60">InsightX</span>
-          <span className="opacity-40">/</span>
-          <span>{pageTitle}</span>
+      <div className="flex flex-col justify-center gap-2 md:flex-row md:items-center">
+        <button
+          onClick={toggleMobile}
+          className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-foreground-subtle transition-colors hover:bg-background-tertiary hover:text-foreground cursor-pointer"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <div className="hidden md:flex flex-col justify-center">
+          <div className="flex items-center gap-2 text-xs text-foreground-subtle">
+            <span className="opacity-60">InsightX</span>
+            <span className="opacity-40">/</span>
+            <span>{pageTitle}</span>
+          </div>
+          <h1 className="text-lg font-semibold tracking-tight text-foreground">
+            {pageTitle}
+          </h1>
         </div>
-        <h1 className="text-lg font-semibold tracking-tight text-foreground">
-          {pageTitle}
-        </h1>
       </div>
 
       {/* ── Right: Actions ────────────────────────────────────── */}

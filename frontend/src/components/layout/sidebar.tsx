@@ -13,22 +13,26 @@ import {
   Brain,
   LayoutDashboard,
   Upload,
+  BarChart3,
   Cpu,
   Lightbulb,
   SlidersHorizontal,
   Shield,
+  Download,
   ChevronLeft,
   ChevronRight,
   Settings,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // ─── Sidebar Context ────────────────────────────────────────────────
 
 interface SidebarContextValue {
   collapsed: boolean;
   toggle: () => void;
-  activeItem: string;
-  setActiveItem: (id: string) => void;
+  isOpenMobile: boolean;
+  toggleMobile: () => void;
 }
 
 const SidebarContext = createContext<SidebarContextValue | null>(null);
@@ -43,11 +47,12 @@ export function useSidebar() {
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const [isOpenMobile, setIsOpenMobile] = useState(false);
   const toggle = useCallback(() => setCollapsed((prev) => !prev), []);
+  const toggleMobile = useCallback(() => setIsOpenMobile((prev) => !prev), []);
 
   return (
-    <SidebarContext.Provider value={{ collapsed, toggle, activeItem, setActiveItem }}>
+    <SidebarContext.Provider value={{ collapsed, toggle, isOpenMobile, toggleMobile }}>
       {children}
     </SidebarContext.Provider>
   );
@@ -59,15 +64,18 @@ interface NavItem {
   id: string;
   label: string;
   icon: React.ElementType;
+  href: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "upload", label: "Upload Data", icon: Upload },
-  { id: "training", label: "Model Training", icon: Cpu },
-  { id: "explanations", label: "Explanations", icon: Lightbulb },
-  { id: "whatif", label: "What-If Analysis", icon: SlidersHorizontal },
-  { id: "bias", label: "Bias Detection", icon: Shield },
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/" },
+  { id: "upload", label: "Upload Data", icon: Upload, href: "/upload" },
+  { id: "eda", label: "Data Explorer", icon: BarChart3, href: "/eda" },
+  { id: "training", label: "Model Training", icon: Cpu, href: "/training" },
+  { id: "explanations", label: "Explanations", icon: Lightbulb, href: "/explanations" },
+  { id: "whatif", label: "What-If Analysis", icon: SlidersHorizontal, href: "/whatif" },
+  { id: "bias", label: "Bias Detection", icon: Shield, href: "/bias" },
+  { id: "export", label: "Export Model", icon: Download, href: "/export" },
 ];
 
 // ─── Animation Variants ─────────────────────────────────────────────
@@ -93,20 +101,30 @@ const labelVariants = {
 // ─── Sidebar Component ──────────────────────────────────────────────
 
 export default function Sidebar() {
-  const { collapsed, toggle, activeItem, setActiveItem } = useSidebar();
+  const { collapsed, toggle, isOpenMobile, toggleMobile } = useSidebar();
+  const pathname = usePathname();
 
   return (
-    <motion.aside
-      variants={sidebarVariants}
-      animate={collapsed ? "collapsed" : "expanded"}
-      initial={false}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col",
-        "bg-sidebar border-r border-border",
-        "overflow-hidden"
+    <>
+      {/* Mobile overlay */}
+      {isOpenMobile && (
+        <div 
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm md:hidden"
+          onClick={toggleMobile}
+        />
       )}
-    >
+      <motion.aside
+        variants={sidebarVariants}
+        animate={collapsed ? "collapsed" : "expanded"}
+        initial={false}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className={cn(
+          "fixed left-0 top-0 z-40 flex h-screen flex-col",
+          "bg-sidebar border-r border-border",
+          "overflow-hidden max-md:!w-64 max-md:transition-transform max-md:duration-300",
+          isOpenMobile ? "max-md:translate-x-0" : "max-md:-translate-x-full"
+        )}
+      >
       {/* ── Logo Section ──────────────────────────────────────── */}
       <div className="flex h-16 shrink-0 items-center gap-3 px-5">
         <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15">
@@ -137,13 +155,16 @@ export default function Sidebar() {
       {/* ── Navigation Items ──────────────────────────────────── */}
       <nav className="mt-4 flex flex-1 flex-col gap-1 px-3">
         {NAV_ITEMS.map((item) => {
-          const isActive = activeItem === item.id;
+          const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
           const Icon = item.icon;
 
           return (
-            <button
+            <Link
               key={item.id}
-              onClick={() => setActiveItem(item.id)}
+              href={item.href}
+              onClick={() => {
+                if (isOpenMobile) toggleMobile();
+              }}
               title={collapsed ? item.label : undefined}
               className={cn(
                 "group relative flex h-11 items-center gap-3 rounded-lg px-3",
@@ -195,7 +216,7 @@ export default function Sidebar() {
                   </motion.span>
                 )}
               </AnimatePresence>
-            </button>
+            </Link>
           );
         })}
       </nav>
@@ -268,5 +289,6 @@ export default function Sidebar() {
         </button>
       </div>
     </motion.aside>
+    </>
   );
 }
