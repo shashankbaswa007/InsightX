@@ -33,6 +33,7 @@ InsightX AI is a comprehensive, production-grade Explainable AI (XAI) and MLOps 
 
 ### 🔮 6. Interactive "What-If" Analysis
 *   **Sensitivity Testing:** Adjust individual feature values using real-time sliders and input fields to immediately witness how the trained model's prediction changes.
+    *   *Note: Tree-based models (like Random Forest or XGBoost) rely on static thresholds and may not flip their predictions for extreme outlier values. For highly sensitive, unbounded What-If testing, manually train a Linear or Logistic Regression model.*
 *   **Counterfactual Explorer:** Run simulations to find the minimum feature modification required to flip a classification prediction (e.g., from *Denied* to *Approved*).
 
 ### ⚖️ 7. Fairness & Bias Assessment
