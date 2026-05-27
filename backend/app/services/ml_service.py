@@ -87,6 +87,8 @@ def apply_transformers(X: pd.DataFrame, transformers: dict) -> pd.DataFrame:
             X_out.loc[:, cat_cols] = transformers['imputer_cat'].transform(X_out[cat_cols])
         if transformers.get('te'):
             X_out.loc[:, cat_cols] = transformers['te'].transform(X_out[cat_cols])
+            # Explicitly cast to float to prevent xgboost from complaining about object dtypes
+            X_out[cat_cols] = X_out[cat_cols].astype(float)
             
     return X_out
 
@@ -153,6 +155,10 @@ def train_model(config: TrainingConfig) -> TrainedModel:
         te = TargetEncoder(target_type="auto", random_state=DEFAULT_RANDOM_STATE)
         X_train.loc[:, cat_cols] = te.fit_transform(X_train[cat_cols], y_train)
         X_test.loc[:, cat_cols] = te.transform(X_test[cat_cols])
+
+        # Cast to float to fix XGBoost dtype errors
+        X_train[cat_cols] = X_train[cat_cols].astype(float)
+        X_test[cat_cols] = X_test[cat_cols].astype(float)
 
         transformers['imputer_cat'] = imputer_cat
         transformers['te'] = te

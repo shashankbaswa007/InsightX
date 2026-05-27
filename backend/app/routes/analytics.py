@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 from app.config import MODEL_DIR
-from app.services.ml_service import load_dataset, preprocess_data
+from app.services.ml_service import load_dataset, preprocess_data, apply_transformers
 from app.models.schemas import TrainedModel
 
 router = APIRouter(prefix="/api/analytics", tags=["Analytics"])
@@ -64,6 +64,8 @@ async def get_confidence_distribution(model_id: str, dataset_id: str):
             
         df = load_dataset(dataset_id)
         X, _, _ = preprocess_data(df, artifact["target_column"], artifact["drop_columns"])
+        transformers = artifact.get("transformers", {})
+        X = apply_transformers(X, transformers)
         
         if not hasattr(model, "predict_proba"):
              return {"distribution": [], "message": "Model does not support predict_proba."}

@@ -45,6 +45,43 @@ InsightX AI is a comprehensive, production-grade Explainable AI (XAI) and MLOps 
 
 ---
 
+## 📖 App Walkthrough (Page by Page)
+
+### 1. Data Upload & Configuration (`/`)
+*   **What happens here:** Users upload a CSV or JSON dataset. The backend parses the data and returns a schema preview. The user then selects the "Target Variable" (what the model should predict) and any features to drop.
+*   **Results:** The backend ML engine is initialized with the dataset schema. A comprehensive data profile is built in preparation for the training phase.
+
+### 2. AutoML Training (`/training`)
+*   **What happens here:** Users select which ML algorithms to test (e.g., XGBoost, Stacking, Random Forest). Users can toggle "Smart Regularization" to automatically prevent overfitting. The backend performs hyperparameter search, cross-validation, applies SMOTE/TargetEncoding, and trains the model.
+*   **Results:** A leaderboard of trained models displaying test metrics (Accuracy, R², F1 Score), Cross-Validation scores, and (for classification) an interactive Confusion Matrix. The best model is serialized into a `.joblib` artifact.
+
+### 3. Exploratory Data Analysis (EDA) (`/eda`)
+*   **What happens here:** The platform generates interactive charts analyzing the raw dataset.
+*   **Results:** You will receive a **Pearson Correlation Heatmap** (to identify linear dependencies between numeric features), a **Target Class Distribution** chart (to spot imbalances), and a summary of missing values across the dataset.
+
+### 4. Explainable AI (XAI) (`/explanations`)
+*   **What happens here:** The backend computes SHAP (global and local) and LIME metrics to demystify the black-box model. It also charts the model's confidence distribution.
+*   **Results:** 
+    *   **Global SHAP Summary:** A bar chart showing the most important features driving the model overall.
+    *   **Local LIME/SHAP Explanation:** Detailed breakdowns for a specific row, showing exactly which features pushed the prediction up or down.
+    *   **Confidence Distribution:** A histogram showing how "certain" the classification model is across its predictions.
+
+### 5. What-If Analysis (`/what-if`)
+*   **What happens here:** Users pick a specific row from the dataset and open a dynamic form to manipulate individual feature values (e.g., changing "Age" from 30 to 45 or "Credit Score" from 600 to 750).
+*   **Results:** Immediate real-time "Counterfactual" predictions. You will see exactly how the model's output shifts in response to your input tweaks, which is essential for sensitivity testing.
+
+### 6. Bias & Fairness (`/bias`)
+*   **What happens here:** Users select a "protected attribute" (e.g., Gender, Race, Age Group). The backend groups the model's predictions by this attribute and calculates fairness metrics.
+*   **Results:** You receive a **Selection Rate Chart** comparing how often the model assigns a positive prediction to different demographic groups. This helps audit the model for systemic demographic disparities (e.g., Equalized Odds).
+
+### 7. Export Center (`/export`)
+*   **What happens here:** Users finalize their MLOps workflow by downloading their results.
+*   **Results:** 
+    *   **Download Model:** A ready-to-deploy `.joblib` file containing both the trained algorithm and the fitted preprocessors (TargetEncoder, MICE Imputer).
+    *   **Download Report:** A polished PDF/HTML executive summary documenting the model's architecture, test metrics, and top SHAP features for stakeholders.
+
+---
+
 ## 🏗️ System Architecture
 
 ```mermaid

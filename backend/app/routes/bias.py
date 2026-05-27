@@ -5,7 +5,7 @@ import joblib
 import pandas as pd
 
 from app.config import MODEL_DIR
-from app.services.ml_service import load_dataset, preprocess_data
+from app.services.ml_service import load_dataset, preprocess_data, apply_transformers
 
 router = APIRouter(prefix="/api/bias", tags=["Bias Detection"])
 
@@ -40,6 +40,8 @@ async def analyze_bias(model_id: str, request: BiasRequest):
         protected_values = df[request.protected_attribute].copy()
         
         X, y, _ = preprocess_data(df, artifact["target_column"], artifact["drop_columns"])
+        transformers = artifact.get("transformers", {})
+        X = apply_transformers(X, transformers)
         
         # Align indices
         protected_values = protected_values.loc[X.index]
